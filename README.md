@@ -4,7 +4,7 @@
 
 This project focuses on analyzing sales data for EmporiUm, a fictional student bookstore chain that also sells technology products, art supplies, and other merchandise both in-store and online.
 
-The goal is to explore and analyze sales data, answer business questions related to an assigned sales territory, and extract useful insights to support business decisions.
+The goal is to explore and analyze sales data to answer business questions related to my assigned sales territory (**New York (NY)**), and extract useful insights to support business decisions.
 
 ## Tools Used
 
