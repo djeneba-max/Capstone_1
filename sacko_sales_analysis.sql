@@ -1,16 +1,138 @@
 -- Include a comment to the top of your script to document which sales territory you are 
 -- analyzing, then add comments to break out each area of your analysis.
 
+select * from management;
+select * from online_sales;
+select * from store_sales;
+select * from store_sales;
+select * from store_locations
+where state = 'New York';
 
 -- Start
 
 -- Assigned Sales Territory: New York (NY)
 
 USE sample_sales; 
-select * from store_locations;
-select * from store_locations where State='New York';
 
-select * from online_sales;
 
-select * from online_sales
-where ShiptoState = 'New York';
+/* What is total revenue overall for sales in the assigned territory, 
+plus the start date and end date that tell you what period the data covers? */
+
+select  store_sales.id, store_sales.transaction_date, store_sales.Sale_Amount, store_sales.store_id, 
+store_locations.StoreLocation, store_locations.state, store_locations.StoreId
+from store_sales
+Join store_locations
+on store_sales.Store_ID = store_locations.StoreId
+where state= 'New york'; 
+
+-- I first needed to join the store_sales and store_locations tables to display their columns 
+-- side by side, and get a clearer view of the data while ensuring that the records matched my assigned sales territory.
+
+select sum(store_sales.Sale_Amount),  min(store_sales.transaction_date) as start_date, 
+max(store_sales.transaction_date) as end_date
+from store_sales
+where store_sales.store_id IN 
+(select store_locations.StoreId from store_locations where state ='New York'); 
+-- The total revenue for sales in NY is $ 4330817.09. 
+-- The data covers the period from January 1,2022, to December 31, 2025.
+
+select Transaction_Date from store_sales 
+where store_sales.store_id IN 
+(select store_locations.StoreId from store_locations where state ='New York')
+order by Transaction_Date desc; -- or asc;
+-- I used this query to verify that I got the expected output from the previous query.
+
+
+/* What is the revenue breakdown by year and month for the sales territory? */
+
+select sum(store_sales.Sale_Amount) as revenue, 
+year(Transaction_Date), month(Transaction_Date)
+from store_sales 
+where store_sales.store_id IN 
+(select store_locations.StoreId from store_locations where state ='New York')
+group by year(Transaction_Date), month(Transaction_Date);
+-- A chart will be used to visualize the monthly revenue breakdown and help answer this question.
+
+
+/* Provide a comparison of total revenue for the specific sales territory and the region it belongs to. */
+
+select sum(store_sales.Sale_Amount)
+from store_sales
+where store_sales.store_id IN 
+(select store_locations.StoreId from store_locations where state ='New York'); 
+-- The total revenue for sales in NY is $ 4330817.09. 
+
+select sum(store_sales.Sale_Amount)
+from store_sales
+where store_sales.store_id IN 
+(select store_locations.StoreId from store_locations 
+where state in (select State from management where Region= 'East')); 
+-- The total revenu for sales in the east region is $ 6723039.53. 
+
+select State from management where Region= 'East'; 
+-- I used this query to check whether the correct states were selected.
+
+
+/* What is the number of transactions per month and average transaction amount by product
+category for the sales territory? */
+
+select * from store_sales;
+select count( * ) as number_transactions, 
+year(Transaction_Date), month(Transaction_Date)
+from store_sales
+where store_sales.store_ID in 
+(select store_locations.StoreId from store_locations where state ='New York')
+group by year(Transaction_Date), month(Transaction_Date); 
+ -- A bar chart and/or a line chart will be used to visualize the monthly transaction volume.
+ 
+ select * from inventory_categories; 
+ select store_sales.id, store_sales.Transaction_Date, 
+ store_sales.Prod_Num, store_sales.Sale_Amount,
+ products.ProdNum, products.Categoryid, 
+ inventory_categories.Categoryid, inventory_categories.Category
+ from store_sales
+join products
+on store_sales.Prod_Num = products.ProdNum
+join inventory_categories
+on products.Categoryid = inventory_categories.Categoryid
+where store_sales.Store_ID in (select store_locations.StoreId from store_locations
+where State='New York'); 
+-- I joined the tables to display their columns side by side 
+-- and get a clearer view of the data.
+
+select round(AVG(store_sales.sale_amount), 2) as 'avg amount',
+inventory_categories.Category
+from store_sales
+join products
+on store_sales.Prod_Num = products.ProdNum
+join inventory_categories
+on products.Categoryid = inventory_categories.Categoryid
+where store_sales.Store_ID in (select store_locations.StoreId from store_locations
+where State='New York')
+group by inventory_categories.Category; 
+-- This query shows the average transaction amount for each product category within 
+-- the assigned sales territory.
+
+select * from inventory_categories;
+select DISTINCT Category from inventory_categories; 
+-- This query helps me distinguish the different categories.
+
+
+/* Can you provide a ranking of in-store sales performance by each store in the 
+sales territory, or a ranking of online sales performance by state within an online 
+sales territory?*/
+
+select avg(Sale_Amount), Store_ID
+from store_sales
+where store_sales.Store_ID in (select store_locations.StoreId from store_locations
+where State='New York')
+group by Store_ID
+order by avg(Sale_Amount) desc; 
+
+select DISTINCT Store_ID from store_sales
+where store_sales.Store_ID in (select store_locations.StoreId from store_locations
+where State='New York');
+-- I used this query to verify that I got the expected output from the previous query.
+
+
+/* What is your recommendation for where to focus sales attention in the next quarter?*/ 
