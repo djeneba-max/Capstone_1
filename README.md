@@ -22,4 +22,4 @@ The goal is to explore and analyze sales data to answer business questions relat
 
 A video demonstration of the project and its findings will be available here:
 
-[Link]
+[ https://drive.google.com/file/d/1AdIP_rH0C_GELCOHi-UM2_OUqGpeU5Xs/view?usp=drive_link ]
