@@ -137,7 +137,8 @@ where State='New York');
 
 /* What is your recommendation for where to focus sales attention in the next quarter?*/ 
 
--- Recommendation: Maintain the positive revenue trend observed in 2025.
+-- Recommendation: 
+-- Maintain the positive revenue trend observed in 2025.
 -- Focus on improving the performance of stores with lower average sales amounts.
 -- Give more visibility to products with lower average sales amounts through targeted promotions or better product placement.
 -- Monitor monthly transaction volumes to identify slower periods and adjust sales strategies accordingly.
